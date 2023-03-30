@@ -1,24 +1,66 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+let todolist = document.getElementById('todolist');
+let saveTodoName = document.getElementById('saveTodoName');
+let saveBtn = document.getElementById('saveBtn');
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
 
-setupCounter(document.querySelector('#counter'))
+fetch('http://localhost:3000/todos')
+.then(res => res.json())
+.then(data => {
+    printTodos(data);
+})
+
+function printTodos(todos) {
+    todos.map(todo => {
+        let li = document.createElement('li');
+        li.innerText = `${todo.todoName}`
+        li.id = todo.todoId;
+
+        li.addEventListener("click", () => {
+            todoDone(li.id);
+        })
+        
+        todolist.appendChild(li);
+    })
+}
+
+
+/** ADD TODO into database */
+saveBtn.addEventListener("click", () => {
+
+    console.log("click: ", saveTodoName.value);
+
+    fetch("http://localhost:3000/todos", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({newToDoName: saveTodoName.value})
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("skapa item", data);
+
+    })
+    
+})
+
+/**
+ * UPDATE todo to done = 1
+ */
+
+function todoDone (id) {
+    console.log("spara todo som klar", id)
+    
+
+    fetch("http://localhost:3000/done", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({todoId: id})
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("skapa som klar", data);
+    })
+}
