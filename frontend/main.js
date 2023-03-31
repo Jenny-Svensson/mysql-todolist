@@ -3,28 +3,56 @@ let saveTodoName = document.getElementById('saveTodoName');
 let saveBtn = document.getElementById('saveBtn');
 
 
-fetch('http://localhost:3000/todos')
-.then(res => res.json())
-.then(data => {
-    printTodos(data);
-})
 
-function printTodos(todos) {
-    todos.map(todo => {
-        let li = document.createElement('li');
-        li.innerText = `${todo.todoName}`
-        li.id = todo.todoId;
+/**
+ * GET all todos
+ */
 
-        li.addEventListener("click", () => {
-            todoDone(li.id);
+function printTodos() {
+
+    fetch('http://localhost:3000/todos')
+        .then(res => res.json())
+        .then(data => {
+            console.log("items", data);
+
+
+        let ul = document.createElement('ul');
+
+        data.map(todo => {
+            let li = document.createElement('li');
+            li.innerText = `${todo.todoName}`
+
+            let deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = `<span class="material-symbols-outlined">close</span>`;
+            deleteBtn.id = todo.todoId;
+
+            deleteBtn.style.marginLeft = "10px";
+
+            li.addEventListener("click", () => {
+                if (li.style.textDecoration === "line-through") {
+                    li.style.textDecoration = "none";
+                } else {
+                    li.style.textDecoration = "line-through";
+                }
+            });
+
+            deleteBtn.addEventListener("click", () => {
+                todoDone(deleteBtn.id)
+            });
+
+            ul.appendChild(li);
+            li.appendChild(deleteBtn);
+
         })
-        
-        todolist.appendChild(li);
+        todolist.innerHTML = "";
+        todolist.appendChild(ul);
     })
 }
 
+/**
+ * ADD todo
+ */
 
-/** ADD TODO into database */
 saveBtn.addEventListener("click", () => {
 
     console.log("click: ", saveTodoName.value);
@@ -38,10 +66,9 @@ saveBtn.addEventListener("click", () => {
     })
     .then(res => res.json())
     .then(data => {
-        console.log("skapa item", data);
-
+        console.log("create todo", data);
+        printTodos(saveTodoName.value);
     })
-    
 })
 
 /**
@@ -50,7 +77,7 @@ saveBtn.addEventListener("click", () => {
 
 function todoDone (id) {
     console.log("spara todo som klar", id)
-    
+
 
     fetch("http://localhost:3000/done", {
         method: "POST",
@@ -61,6 +88,10 @@ function todoDone (id) {
     })
     .then(res => res.json())
     .then(data => {
-        console.log("skapa som klar", data);
+        console.log("change done from 0 to 1", data);
+        printTodos(id);
     })
 }
+
+
+printTodos();
