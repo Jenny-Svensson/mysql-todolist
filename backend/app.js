@@ -26,8 +26,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-/** TODOS ***/
-app.get('/todos', function(req,res,next) {
+/** 
+ * GET all todos where done = 0 
+ * and if 1, dont show the todo
+***/
+
+app.get('/todos', function(req, res, next) {
     connection.connect(function(err) {
         if (err) {
             console.log(err)
@@ -40,13 +44,17 @@ app.get('/todos', function(req,res,next) {
                 console.log(err)
             }
 
-            console.log("result", result)
+            console.log("todos", result)
             res.json(result);
         })
     })
 })
 
-app.post('/todos', function(req,res,next) {
+/** 
+ * POST new todo
+***/
+
+app.post('/todos', function(req, res, next) {
     let newTodo = req.body;
 
     connection.connect(function(err) {
@@ -61,13 +69,17 @@ app.post('/todos', function(req,res,next) {
                 console.log(err)
             }
 
-            console.log("result", result)
+            console.log("new todo", result)
             res.json(result);
         })
     })
 })
 
-app.post('/done', function(req,res,next) {
+/** 
+ * Update done from 0 to 1 
+***/
+
+app.post('/done', function(req, res, next) {
     let todoDone = req.body.todoId;
 
     connection.connect(function(err) {
@@ -82,14 +94,11 @@ app.post('/done', function(req,res,next) {
                 console.log(err)
             }
 
-            console.log("result", result)
+            console.log("todo done", result)
             res.json(result);
         })
     })
 })
-
-
-
 
 
 module.exports = app;

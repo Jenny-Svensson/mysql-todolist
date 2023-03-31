@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Delicious+Handrawn&family=Poppins:wght@300&display=swap');
+
+body {
+    background-color: #d1d1d1;
+    font-family: 'Poppins', sans-serif;
+}
+
+h1 {
+    font-size: 4rem;
+    font-family: 'Delicious Handrawn', cursive;
+}
+
+#todo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+fieldset {
+    background-color: #eeeeee;
+}
+
+legend {
+    background-color: gray;
+    color: white;
+    padding: 5px 10px;
+}
+
+#todolist {
+    width: 400px;
+}
+
+li {
+    padding: 10px;
+    list-style-type: square;
+    font-size: 1rem;
+}
+
+li > button {
+    float: right;
+}
+
+
